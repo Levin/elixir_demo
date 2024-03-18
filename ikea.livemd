@@ -1,0 +1,276 @@
+# Welcome to ElixirLand
+
+```elixir
+Mix.install([
+  {:httpoison, "~> 2.0"},
+  {:kino_maplibre, "~> 0.1.10"},
+  {:kino_vega_lite, "~> 0.1.10"}
+])
+```
+
+## Pattern Matching
+
+Hey, we will start our journey with a probably well known mechanism: Pattern Matching!
+Lets see this in action:
+
+```elixir
+one = 1
+IO.puts("normal match/(assignment): #{one}")
+[one] = [1]
+IO.puts("pattern match on array element: #{one}")
+```
+
+Cool, so it looks like we can match the structure of the value on the right with variables names on the left. Lets try this! Free the Rabbit
+
+```elixir
+trapped_rabbit = ["|", "rabbit", "|"]
+# free_rabbit = ?
+```
+
+This cannot only be done to lists, we can also match much harder datastructures like big maps or tuples:
+
+```elixir
+# here we match a Result out of our database, where we get back a map. 
+# The Result can be as long as you want it to be but at the end, you just grab the piece you want.
+%{data: data} = %{
+  timstamp: ~T[20:06:15.124277],
+  table: :ikea_data,
+  data: %{pin: 2092, bankaccount: "Levin Gschwendter"}
+}
+
+# and now with a username and his birthday
+# {name, age} = {}
+```
+
+Now everyone does 2 of his own. Select two different data structures to match against ( see here for data structures: https://elixir-lang.org/getting-started/basic-types.html )
+
+```elixir
+# Playground
+```
+
+## Pipelines
+
+Now we know how to get to our data. Lets see how to manipulate it! For manipulation, we need different functions which come mainly from two modules. Here are the most used modules used for working with lists, tuples or maps: 1. https://hexdocs.pm/elixir/1.12/Enum.html and 2. https://hexdocs.pm/elixir/1.12/List.html.
+
+Upfront, there might be some weird syntax (|>). This simply defines the pipeline. What i mean by that is that when you want a String to be split(String.split/2), you could either write:
+
+1. String.split(string, ":")
+2. string |> String.split(":")
+
+When you hover over the functions which i used below, you can see how they are used.
+So lets see some examples next:
+
+```elixir
+"walt:42 peter:12 jen:99 bruce:32"
+|> String.split()
+# the long form of a inline function => fn x -> do(x) end
+|> Enum.map(fn x -> String.split(x, ":") end)
+# short form for a inline function  => &do(&1)
+|> Enum.map(&%{name: List.first(&1), age: List.last(&1) |> String.to_integer()})
+```
+
+Take the example above as reference for the upcoming excersise. To really get a feel for the functions and what to do with them, you will have 10 minutes time so you can play around with some of the data below. If you are finished playing, just put your name in the array below but remember, this is not a race ;-)
+
+```elixir
+finished = []
+
+uuids =
+  [
+    "dfb7b552-7037-11ee-bd63-325096b39f47",
+    "dfb7b818-7037-11ee-9949-325096b39f47",
+    "dfb7b8b8-7037-11ee-b50a-325096b39f47",
+    "dfb7b930-7037-11ee-b7d9-325096b39f47",
+    "dfb7b99e-7037-11ee-9ed1-325096b39f47",
+    "dfb7ba16-7037-11ee-b913-325096b39f47",
+    "dfb7ba84-7037-11ee-a1a9-325096b39f47",
+    "dfb7baf2-7037-11ee-b2bf-325096b39f47"
+  ]
+
+beers =
+  [
+    ["Sagres", 1.75],
+    ["SuperBock", 2.00],
+    ["Budweiser", 1.58],
+    ["Indian Pale Ale", 2.50],
+    ["Brew Dog", 2.25],
+    ["Algarve Rock", 2.75]
+  ]
+
+babynames =
+  [
+    %{index: 1, male: "Liam", female: "Olivia"},
+    %{index: 2, male: "Noah", female: "Emma"},
+    %{index: 3, male: "Oliver", female: "Charlotte"},
+    %{index: 4, male: "James", female: "Amelia"},
+    %{index: 5, male: "Elijah", female: "Sophia"},
+    %{index: 6, male: "William", female: "Isabella"},
+    %{index: 7, male: "Henry", female: "Ava"},
+    %{index: 8, male: "Lucas", female: "Mia"},
+    %{index: 9, male: "Benjamin", female: "Evelyn"},
+    %{index: 10, male: "Theodore", female: "Luna"}
+  ]
+
+persons =
+  [
+    {"Jester", 42, "Loule"},
+    {"Jeniffer", 23, "Faro"},
+    {"Justine", 24, "Portimao"},
+    {"Briget", 77, "Faro"},
+    {"Bruce", 54, "Portimao"},
+    {"Benjamin", 33, "Loule"},
+    {"Jen", 60, "Faro"}
+  ]
+```
+
+## Modules
+
+In Elixir we do not have classes and so on no methods corresponding to them. But we have Modules which can take care of your functions. So lets see how we define one and how to use them.
+
+```elixir
+defmodule MyModule do
+  def add_2(num), do: 2 + num
+
+  def add_3(num) do
+    3 + num
+  end
+end
+```
+
+here we created a module named MyModule. It holds two functions, which are add_2 and add_3. The add_2 function is a shorthand version of the add_3 function. if your function only consists of one statement, you can use the short version.
+
+## Functions
+
+Lets take a closer look at functions here because they are the what you will be working with. Functions can only be defined inside a module. So lets create another one
+
+```elixir
+# write a module and add one private and two public functions. 
+```
+
+There is a method of writing functions which is called Multi-Clausing. This can loosely be translated to function overriding in other languages but ill demonstrate it and then you can have a try.
+
+```elixir
+defmodule Greeting do
+  def greet(:professor_williams), do: "Hello, Professor Williams"
+
+  def greet(:mom), do: "Hi, Mom!"
+
+  def greet(:best_friend), do: "Yo! Wassup?!?!"
+end
+```
+
+test these functions below ->
+
+```elixir
+
+```
+
+## Games
+
+Welcome to the Games section. Here we train what we have learned so far. Let's see what games we have today:
+
+## Game 1
+
+After fixing the scoreboard issue, you need a break and got in your garden to get some rest. Of course you are in Portugal so you have some olive trees in the backyard. They need to be processed so you start to collect them to make olive oil out of them. But some are in a bad condition so you dont want to further process these. How many bootles of oil could you make if one bottle takes 25 olives?
+
+```elixir
+olive_trees = [
+  %{
+    tree: [
+      {3, :good},
+      {1, :bad},
+      {4, :good},
+      {2, :good},
+      {5, :bad},
+      {8, :good},
+      {1, :bad},
+      {8, :bad}
+    ]
+  },
+  %{
+    tree: [
+      {2, :bad},
+      {5, :bad},
+      {3, :good},
+      {7, :bad},
+      {9, :good},
+      {6, :good},
+      {4, :bad},
+      {7, :good}
+    ]
+  },
+  %{
+    tree: [
+      {6, :bad},
+      {5, :good},
+      {8, :bad},
+      {2, :good},
+      {3, :bad},
+      {4, :good},
+      {1, :good},
+      {2, :bad}
+    ]
+  }
+]
+```
+
+## Game 2
+
+We are the lead developer in a firm which produces cool games. You got a new task from your scrum master today that the score tables are broken. This is the data you have to tackle:
+
+```elixir
+round1 =
+  {[
+     %{playername: "Tammy Hinton", points: 10},
+     %{playername: "NightWolf", points: 12},
+     %{playername: "Melanie Gill", points: 5}
+   ],
+   [
+     %{playername: "Melanie Gill", points: 6},
+     %{playername: "Tammy Hinton", points: 3},
+     %{playername: "NightWolf", points: 8}
+   ],
+   [
+     %{playername: "Melanie Gill", points: 7},
+     %{playername: "NightWolf", points: 5},
+     %{playername: "Tammy Hinton", points: 3}
+   ]}
+```
+
+You need to display the winner for:
+
+1. each round
+2. the whole game
+
+## Game 3
+
+This one is the longest one. Lets go!
+
+You are lead developer at a big social media company. The new boss introduced a new feature for the users: A blue check! They can pay for it, but who keeps track of the paying customers. Only them should receive the new blue check. You will have to deal with two kinds of lists. The one is from your customer database which holds the current state without any regards to payments. The second list is from your stripe gateway which lists you all the new payments made.
+
+You want to merge these two lists so that you can see in one list who paid.
+
+```elixir
+userlist =
+  [
+    %{uuid: "d4d0d-a64s3", username: "paul", likes: 111, posts: 25},
+    %{uuid: "colbd-judw3", username: "jenn", likes: 10_000, posts: 5},
+    %{uuid: "vjd0d-hk9q3", username: "christiano", likes: 10_000_000_000, posts: 1},
+    %{uuid: "bur0d-f7dr3", username: "wosible", likes: 32, posts: 9},
+    %{uuid: "jili9-d2dz3", username: "vinery xyz", likes: 54, posts: 7},
+    %{uuid: "k4l09-799op", username: "burinda", likes: 43, posts: 58},
+    %{uuid: "kuz57-6670b", username: "wieldo", likes: 87, posts: 4},
+    %{uuid: "o47df-a6ds3", username: "brucinator", likes: 63, posts: 3},
+    %{uuid: "q40ww-i0tu6", username: "cortina", likes: 798_765, posts: 55},
+    %{uuid: "wee3r-ansvt", username: "emeralda", likes: 123_443_034, posts: 50}
+  ]
+
+payment_list = ["bur0d-f7dr3", "q40ww-i0tu6", "wee3r-ansvt", "d4d0d-a64s3"]
+```
+
+How much profit do we now make?
+
+You can also model the data with the use of smart cells! have a look. Take some data from before and model some cells on your own. But be aware that you may have to alter some datasets (with pipelines and the Enum module for example) to get the desired datamodel which a smart cell needs (see maps (https://hexdocs.pm/elixir/1.12.3/Map.html))
+
+```elixir
+# playground
+```
